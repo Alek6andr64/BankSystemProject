@@ -1,0 +1,74 @@
+from tkinter import *
+from Window import *
+from tkinter import messagebox
+
+class WithdrawWindow(Window):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs): #Реализация Singletone
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self, main_window): #Конструктор
+        self.main_window = main_window
+        self._balance_user = main_window._balance_user
+        self.root = Tk()
+        self.root.geometry("600x300")
+        self.root.title("BankSystemWithdraw")
+        self.root.protocol("WM_DELETE_WINDOW", self._on_closing)
+
+    def _on_closing(self): #Обработка закрытия окна
+        self.main_window.withdraw_window = None
+        self.root.destroy()
+
+    def __withdraw(self): #Снятие денег
+        try:
+            __entered_value = float(self.input_amount.get())
+            if (self._balance_user >= __entered_value):
+                self.main_window._update_balance(__entered_value, False)
+
+                self._balance_user = self.main_window._balance_user
+                self.main_label.config(text=f"Ваш баланс: {self._balance_user}")
+            else:
+                messagebox.showerror("Ошибка", "Недостаточно средств на балансе")
+
+            self.input_amount.delete(0, END)
+            self.input_amount.insert(0, "0")
+
+        except ValueError:
+            messagebox.showerror("Ошибка", "Ввод должен быть только чисел")
+            self.input_amount.delete(0, END)
+            self.input_amount.insert(0, "0")
+
+    def _create_widgets(self): #Создание виджетов
+        self.main_label = Label(
+            self.root,
+            text=f"Ваш баланс: {self._balance_user}",
+            font=("Times New Roman", 40)
+        )
+
+        self.sum_label = Label(
+            self.root,
+            text="Введите сумму снятия:",
+            font=("Times New Roman", 20)
+        )
+
+        self.input_amount = Entry(
+            self.root,
+            justify=RIGHT,
+            font=("Times New Roman", 20)
+        )
+
+        self.button_withdraw = Button(
+            self.root,
+            text="Снять деньги",
+            font=("Times New Roman", 20),
+            command=self.__withdraw
+        )
+
+    def _pack_widgets(self): #Размещение виджетов
+        self.main_label.place(x=20, y=20, width=560, height=60)
+        self.sum_label.place(x=20, y=80, width=560, height=60)
+        self.input_amount.place(x=20, y=160, width=320, height=60)
+        self.button_withdraw.place(x=360, y=160, width=220, height=60)
