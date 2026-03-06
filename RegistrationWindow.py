@@ -2,24 +2,24 @@ from Window import *
 from tkinter import *
 
 
-class LoginWindow(Window):
+class RegistrationWindow(Window):
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args, **kwargs):  # Реализация Singletone
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self):
+    def __init__(self):  # Конструктор
         self.root = Tk()
         self.root.geometry("500x580")
-        self.root.title("BankSystemLogin")
-        self.root.configure(bg='black')
+        self.root.title("BankSystemRegistration")
+        self.root.configure(bg='black')  # Добавлен черный фон
         self.__accounts = {
             "adm69": "6969"
         }
 
-    def __enter(self):
+    def __registration(self):  # Регистрация нового пользователя
         login = self.login_input.get()
         password = self.password_input.get()
 
@@ -27,26 +27,26 @@ class LoginWindow(Window):
             self.alert_label.config(text="Заполните все поля!")
             return
 
-        if login in self.__accounts and self.__accounts[login] == password:
+        if login not in self.__accounts:
             self.root.destroy()
-            from MainWindow import MainWindow
-            main_window = MainWindow(login)
-            main_window.main()
+            from LoginWindow import LoginWindow
+            login_window = LoginWindow()
+            login_window.main()
 
         else:
-            self.alert_label.config(text="Неверный логин или пароль!")
+            self.alert_label.config(text="Аккаунт уже существует!")
             self.password_input.delete(0, END)
 
-    def __open_registration(self):
+    def __open_login(self):
         self.root.destroy()
-        from RegistrationWindow import RegistrationWindow
-        registration_window = RegistrationWindow()
-        registration_window.main()
+        from LoginWindow import LoginWindow
+        login_window = LoginWindow()
+        login_window.main()
 
-    def _create_widgets(self):
+    def _create_widgets(self):  # Создание виджетов
         self.login_label = Label(
             self.root,
-            text=f"Введите логин:",
+            text="Введите логин:",
             font=("Times New Roman", 40),
             bg='black',
             fg='white'
@@ -87,9 +87,9 @@ class LoginWindow(Window):
 
         self.enter_button = Button(
             self.root,
-            text="Войти",
+            text="Зарегистрироваться",
             font=("Times New Roman", 20),
-            command=self.__enter,
+            command=self.__registration,
             bg='#ef4b3f',
             fg='black',
             activebackground='#ef4b3f',
@@ -97,19 +97,19 @@ class LoginWindow(Window):
             relief=FLAT
         )
 
-        self.register_label = Label(
+        self.return_to_login_label = Label(
             self.root,
-            text=f"Нет аккаунта? Зарегистрируйтесь!",
+            text="Уже есть аккаунт?",
             font=("Times New Roman", 14),
             bg='black',
             fg='white'
         )
 
-        self.register_button = Button(
+        self.return_to_login_button = Button(
             self.root,
-            text="Регистрация",
+            text="Войти",
             font=("Times New Roman", 20),
-            command=self.__open_registration,
+            command=self.__open_login,
             bg='#ef4b3f',
             fg='black',
             activebackground='#ef4b3f',
@@ -117,12 +117,12 @@ class LoginWindow(Window):
             relief=FLAT
         )
 
-    def _pack_widgets(self):
+    def _pack_widgets(self):  # Размещение виджетов
         self.login_label.place(x=20, y=20, width=460, height=60)
         self.login_input.place(x=20, y=80, width=460, height=60)
         self.password_label.place(x=20, y=160, width=460, height=60)
         self.password_input.place(x=20, y=220, width=460, height=60)
         self.alert_label.place(x=20, y=280, width=460, height=60)
         self.enter_button.place(x=20, y=340, width=460, height=60)
-        self.register_label.place(x=20, y=430, width=460, height=60)
-        self.register_button.place(x=20, y=480, width=460, height=60)
+        self.return_to_login_label.place(x=20, y=430, width=460, height=60)
+        self.return_to_login_button.place(x=20, y=480, width=460, height=60)
