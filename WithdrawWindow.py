@@ -1,5 +1,5 @@
-from tkinter import *
 from Window import *
+from tkinter import *
 from tkinter import messagebox
 
 class WithdrawWindow(Window):
@@ -11,12 +11,14 @@ class WithdrawWindow(Window):
         return cls._instance
 
     def __init__(self, main_window): #Конструктор
-        self.main_window = main_window
-        self._balance_user = main_window._balance_user
-        self.root = Tk()
-        self.root.geometry("600x300")
-        self.root.title("BankSystemWithdraw")
-        self.root.protocol("WM_DELETE_WINDOW", self._on_closing)
+        if not hasattr(self, "initialized"):
+            self.main_window = main_window
+            self._balance_user = main_window._balance_user
+            super().__init__()
+            self.root.geometry("600x300")
+            self.root.title("BankSystemWithdraw")
+            self.root.protocol("WM_DELETE_WINDOW", self._on_closing)
+            self.initialized = True
 
     def _on_closing(self): #Обработка закрытия окна
         self.main_window.withdraw_window = None
@@ -25,17 +27,19 @@ class WithdrawWindow(Window):
     def __withdraw(self): #Снятие денег
         try:
             __entered_value = float(self.input_amount.get())
-            if (self._balance_user >= __entered_value):
+            if __entered_value <= 0:
+                messagebox.showerror("Ошибка", "Сумма должна быть положительной")
+            elif self._balance_user >= __entered_value:
                 self.main_window._update_balance(__entered_value, False)
-
                 self._balance_user = self.main_window._balance_user
                 self.main_label.config(text=f"Ваш баланс: {self._balance_user}")
+                self.input_amount.delete(0, END)
+                self.input_amount.insert(0, "0")
+                messagebox.showinfo("Успех", "Средства успешно сняты!")
             else:
                 messagebox.showerror("Ошибка", "Недостаточно средств на балансе")
-
-            self.input_amount.delete(0, END)
-            self.input_amount.insert(0, "0")
-
+                self.input_amount.delete(0, END)
+                self.input_amount.insert(0, "0")
         except ValueError:
             messagebox.showerror("Ошибка", "Ввод должен быть только чисел")
             self.input_amount.delete(0, END)
@@ -45,26 +49,37 @@ class WithdrawWindow(Window):
         self.main_label = Label(
             self.root,
             text=f"Ваш баланс: {self._balance_user}",
-            font=("Times New Roman", 40)
+            font=("Times New Roman", 40),
+            bg='black',
+            fg='white'
         )
 
         self.sum_label = Label(
             self.root,
             text="Введите сумму снятия:",
-            font=("Times New Roman", 20)
+            font=("Times New Roman", 20),
+            bg='black',
+            fg='white'
         )
 
         self.input_amount = Entry(
             self.root,
             justify=RIGHT,
-            font=("Times New Roman", 20)
+            font=("Times New Roman", 20),
+            bg='white',
+            fg='black'
         )
 
         self.button_withdraw = Button(
             self.root,
             text="Снять деньги",
             font=("Times New Roman", 20),
-            command=self.__withdraw
+            command=self.__withdraw,
+            bg='#ef4b3f',
+            fg='black',
+            activebackground='#ef4b3f',
+            activeforeground='black',
+            relief=FLAT
         )
 
     def _pack_widgets(self): #Размещение виджетов
