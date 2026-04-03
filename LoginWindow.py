@@ -126,3 +126,8 @@ class LoginWindow(Window):
         self.enter_button.place(x=20, y=340, width=460, height=60)
         self.register_label.place(x=20, y=430, width=460, height=60)
         self.register_button.place(x=20, y=480, width=460, height=60)
+
+    def main(self):  # Главный метод запуска окна
+        self._create_widgets()
+        self._pack_widgets()
+        self.root.mainloop()

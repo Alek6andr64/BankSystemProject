@@ -14,7 +14,7 @@ class WithdrawWindow(Window):
         if not hasattr(self, "initialized"):
             self.main_window = main_window
             self._balance_user = main_window._balance_user
-            super().__init__()
+            self.root = Tk()
             self.root.geometry("600x300")
             self.root.title("BankSystemWithdraw")
             self.root.protocol("WM_DELETE_WINDOW", self._on_closing)
@@ -87,3 +87,8 @@ class WithdrawWindow(Window):
         self.sum_label.place(x=20, y=80, width=560, height=60)
         self.input_amount.place(x=20, y=160, width=320, height=60)
         self.button_withdraw.place(x=360, y=160, width=220, height=60)
+
+    def main(self):  # Главный метод запуска окна
+        self._create_widgets()
+        self._pack_widgets()
+        self.root.mainloop()

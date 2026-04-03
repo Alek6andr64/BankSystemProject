@@ -14,7 +14,8 @@ class MainWindow(Window): #Класс основого окна
 
     def __init__(self, user_name): #Конструктор
         if not hasattr(self, "initialized"):
-            super().__init__()
+            self.root = Tk()
+            self.root.geometry("500x500")
             self.deposit_window = None
             self.withdraw_window = None
             self.root.configure(bg='black')
@@ -98,3 +99,8 @@ class MainWindow(Window): #Класс основого окна
         self.button_get_balance.place(x=20, y=140, width=460, height=60)
         self.button_deposit.place(x=20, y=230, width=460, height=60)
         self.button_take_money.place(x=20, y=320, width=460, height=60)
+
+    def main(self):  # Главный метод запуска окна
+        self._create_widgets()
+        self._pack_widgets()
+        self.root.mainloop()

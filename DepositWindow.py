@@ -14,7 +14,7 @@ class DepositWindow(Window):
         if not hasattr(self, "initialized"):
             self.main_window = main_window
             self._balance_user = main_window._balance_user
-            super().__init__()
+            self.root = Tk()
             self.root.configure(bg='black')
             self.root.geometry("600x300")
             self.root.title("BankSystemDeposit")
@@ -84,3 +84,8 @@ class DepositWindow(Window):
         self.sum_label.place(x=20, y=80, width=560, height=60)
         self.input_amount.place(x=20, y=160, width=320, height=60)
         self.button_deposit.place(x=360, y=160, width=220, height=60)
+
+    def main(self):  # Главный метод запуска окна
+        self._create_widgets()
+        self._pack_widgets()
+        self.root.mainloop()
